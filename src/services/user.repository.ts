@@ -50,6 +50,25 @@ export class UserRepository {
     }
 }
 
+
+(async function () {
+    const service = new PostgressService();
+    await service.query(`
+        CREATE TABLE IF NOT EXISTS appuser (
+            uid VARCHAR(30) CONSTRAINT pk PRIMARY KEY,
+            linked boolean DEFAULT false
+        )`
+    );
+
+    await service.query('ALTER TABLE appuser ADD COLUMN IF NOT EXISTS noderedversion integer DEFAULT 1');
+	await service.query('ALTER TABLE appuser ADD COLUMN IF NOT EXISTS refreshtoken integer DEFAULT 1');
+})().catch(err => {
+    console.error(err);
+}).then(() => {
+    console.log('done');
+});
+
+
 // (async function () {
 //     const service = new PostgressService();
 //     // await service.query(`
